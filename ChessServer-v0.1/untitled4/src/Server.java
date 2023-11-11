@@ -36,7 +36,7 @@ public class Server implements Runnable {
     public void broadcast(String message) {
         for(ConnectionHandler ch : connections) {
             if(ch != null) {
-                ch.sendMessage(message);
+                ch.systemMessage(message);
             }
         }
     }
@@ -81,10 +81,10 @@ public class Server implements Runnable {
             try {
                 out = new PrintWriter(client.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                out.println("Please enter your nickname: ");
+                systemMessage("Please enter your nickname: ");
                 String supposedName = in.readLine();
                 while(findUser(supposedName) != null) {
-                    out.println("Please choose another nickname: ");
+                    systemMessage("Please choose another nickname: ");
                     supposedName = in.readLine();
                 }
                 nickname = supposedName;
@@ -148,10 +148,10 @@ public class Server implements Runnable {
         }
         public void inGame(String message) {
             if(message.startsWith("M")) {
-                messageOpponent(message.substring(1));
+                messageOpponent(message);
             }
             else if (message.startsWith("X")) {
-                makeMove(message.substring(1));
+                makeMove(message);
             }
             else if(message.startsWith("E")) {
                 endGame(1);
@@ -165,33 +165,37 @@ public class Server implements Runnable {
         public void endGame(int winner) {
             Game tmp = new Game(game.players[0], game.players[1]);
             if(winner == 1) {
-                tmp.players[0].sendMessage("You won");
-                tmp.players[1].sendMessage("You lost");
+                tmp.players[0].systemMessage("You won");
+                tmp.players[1].systemMessage("You lost");
             }
             else if(winner == 2) {
-                tmp.players[0].sendMessage("You lost");
-                tmp.players[1].sendMessage("You won");
+                tmp.players[0].systemMessage("You lost");
+                tmp.players[1].systemMessage("You won");
             }
             else if(winner == 0) {
-                tmp.players[0].sendMessage("Draw");
-                tmp.players[1].sendMessage("Draw");
+                tmp.players[0].systemMessage("Draw");
+                tmp.players[1].systemMessage("Draw");
             }
-            tmp.players[0].sendMessage("SERVER: endOfGame");
+            tmp.players[0].systemMessage("SERVER: endOfGame");
             tmp.players[0].game = null;
-            tmp.players[1].sendMessage("SERVER: endOfGame");
+            tmp.players[1].systemMessage("SERVER: endOfGame");
             tmp.players[1].game = null;
             Server.this.games.remove(this);
         }
 
-        public void messageOpponent(String message) {
+        public void sendToOpponent(String message) {
             if (game.players[0] == this) {
-                game.players[1].sendMessage(nickname + ": " + message);
+                game.players[1].sendMessage(message);
             } else {
-                game.players[0].sendMessage(nickname + ": " + message);
+                game.players[0].sendMessage(message);
             }
+        }
+        public void messageOpponent(String message) {
+            sendToOpponent("M" + nickname + ": " + message.substring(1));
         }
         public void makeMove(String move) {
             System.out.println("SERVER: (" + nickname + ") Move: " + move);
+            sendToOpponent(move);
         }
 
         public String extractName(String message) {
@@ -205,16 +209,16 @@ public class Server implements Runnable {
             if(nick != null && findUser(nick) != null) {
                 ConnectionHandler ch = findUser(nick);
                 if(Objects.equals(ch.nickname, nickname)) {
-                    out.println("Wanna play with yourself ?!");
+                    systemMessage("Wanna play with yourself ?!");
                     return;
                 }
                 if(ch.game == null) {
-                    ch.sendMessage("Wanna play with: " + nickname + "?");
+                    ch.systemMessage("Wanna play with: " + nickname + "?");
                     ch.inviter = nickname;
                 }
-                else { out.println("SERVER: Player already in another game"); }
+                else { systemMessage("SERVER: Player already in another game"); }
             }
-            else { out.println("SERVER: There is no such player."); }
+            else { systemMessage("SERVER: There is no such player."); }
         }
         public void playersOnline() {
             out.println("Active players:");
@@ -230,14 +234,14 @@ public class Server implements Runnable {
                 ch.game = game;
                 System.out.println("SERVER: New game: " + game.players[0].nickname + " " + game.players[1].nickname);
                 out.println("SERVER: In game with: " + game.players[1].nickname);
-                ch.sendMessage("SERVER: In game with: " + game.players[0].nickname);
+                ch.systemMessage("SERVER: In game with: " + game.players[0].nickname);
                 games.add(game); //na koniec if-a
             }
         }
         public void reject() {
             if(inviter != null) {
                 ConnectionHandler ch = findUser(inviter);
-                ch.sendMessage("Invitation rejected");
+                ch.systemMessage("Invitation rejected");
                 inviter = null;
             }
         }
@@ -246,6 +250,10 @@ public class Server implements Runnable {
         public void sendMessage(String message) {
             out.println(message);
         }
+        public void systemMessage(String message) {
+            sendMessage("S" + message);
+        }
+
         public void shutdown() {
             try {
                 in.close();

@@ -11,6 +11,7 @@ public class Client  implements Runnable {
     private PrintWriter out;
     public volatile String input;
     private  boolean done = false;
+    private String board = " "; //-----------------------------------------ustawienie poczatkowe szachow
 
     public void shutdown() {
         done = true;
@@ -91,11 +92,31 @@ public class Client  implements Runnable {
 
             String inMessage;
             while((inMessage = in.readLine()) != null) {
-                System.out.println(inMessage);
+                if(inMessage.startsWith("S")) {
+                    receiveSystemMessage(inMessage.substring(1));
+                }
+                else if (inMessage.startsWith("X")) {
+                    receiveOpponentsMessage(inMessage.substring(1));
+                }
+                else if (inMessage.startsWith("M")) {
+                    receiveMove(inMessage.substring(1));
+                }
             }
         } catch (IOException e) {
             // unlucky
         }
+    }
+
+    public void receiveSystemMessage(String message) {
+        System.out.println("System: " + message);
+    }
+    public void receiveOpponentsMessage(String message) {
+        System.out.println("Message: " + message);
+    }
+    public void receiveMove(String move) {
+        board = move;
+        System.out.println("Move: " + board);
+
     }
 
     /**
@@ -148,6 +169,7 @@ public class Client  implements Runnable {
      * @param move ruch
      */
     public void makeMove(String move) {
-        input = "X" + move;
+        board = move;
+        input = "X" + board;
     }
 }

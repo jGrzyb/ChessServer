@@ -9,7 +9,7 @@ public class Client  implements Runnable {
     private Socket client;
     private BufferedReader in;
     private PrintWriter out;
-    public volatile String input;
+//    public volatile String input;
     private  boolean done = false;
     private String board = " "; //-----------------------------------------ustawienie poczatkowe szachow
 
@@ -26,30 +26,26 @@ public class Client  implements Runnable {
         }
     }
 
-    class InputHandler implements Runnable {
-        @Override
-        public void run() {
-            while (!done) {
-                while (input == null) {
-                    Thread.onSpinWait();
-                }
-                String message = input;
-                input = null;
-                if(message.equals("/quit")) {
-                    out.println(message);
-                    shutdown();
-                    break;
-                }
-                else {
-                    out.println(message);
-                }
-            }
-        }
-    }
-    public void send(String message) {
-        input = message;
-        notify();
-    }
+//    class InputHandler implements Runnable {
+//        @Override
+//        public void run() {
+//            while (!done) {
+//                while (input == null) {
+//                    Thread.onSpinWait();
+//                }
+//                String message = input;
+//                input = null;
+//                if(message.equals("/quit")) {
+//                    out.println(message);
+//                    shutdown();
+//                    break;
+//                }
+//                else {
+//                    out.println(message);
+//                }
+//            }
+//        }
+//    }
 
     class TestInput implements Runnable {
         @Override
@@ -60,10 +56,10 @@ public class Client  implements Runnable {
                     String tmp = inReader.readLine();
                     if(tmp.equals("/quit")) {
                         inReader.close();
-                        input = tmp;
+                        send(tmp);
                         break;
                     }
-                    input = tmp;
+                    send(tmp);
                 }
 
             } catch (IOException e) {
@@ -75,6 +71,26 @@ public class Client  implements Runnable {
     public static void main(String[] args) {
         Client client = new Client();
         client.run();
+    }
+
+    /**
+     * Wysyla wiadomosc na serwer. Nie uzywac jesli mozesz skorzystac z: <p>
+     * {@link #playWith(String)}, <p>
+     * {@link #playersOnline()}, <p>
+     * {@link #confirm()}, <p>
+     * {@link #reject()}, <p>
+     * {@link #messageOpponent(String)}, <p>
+     * {@link #makeMove(String)}
+     * @param message wiadomosc
+     */
+    public void send(String message) {
+        if(message.equals("/quit")) {
+            out.println(message);
+            shutdown();
+        }
+        else {
+            out.println(message);
+        }
     }
 
     /**
@@ -90,9 +106,9 @@ public class Client  implements Runnable {
             Thread t1 = new Thread(testInput);
             t1.start();
 
-            InputHandler inHandler = new InputHandler();
-            Thread t = new Thread(inHandler);
-            t.start();
+//            InputHandler inHandler = new InputHandler();
+//            Thread t = new Thread(inHandler);
+//            t.start();
 
             String inMessage;
             while((inMessage = in.readLine()) != null) {
@@ -114,12 +130,27 @@ public class Client  implements Runnable {
         }
     }
 
+    /**
+     * Przyjmuje wiadomosc systemowa
+     * @param message wiadomosc
+     */
+
     public void receiveSystemMessage(String message) {
         System.out.println("System: " + message);
     }
+
+    /**
+     * przyjmuje wiadomosc od przeciwnika. Tylko podczas gry (mam nadzieje)
+     * @param message wiadomosc
+     */
     public void receiveOpponentsMessage(String message) {
         System.out.println("Message: " + message);
     }
+
+    /**
+     * przyjmuje ruch
+     * @param move ruch
+     */
     public void receiveMove(String move) {
         board = move;
         System.out.println("Move: " + board);
@@ -131,7 +162,7 @@ public class Client  implements Runnable {
      * @param nick nazwa gracza
      */
     public void playWith(String nick) {
-        input = "/playWith " + nick;
+        send("/playWith " + nick);
     }
 
     /**
@@ -140,7 +171,7 @@ public class Client  implements Runnable {
      * @throws IOException wyjatek
      */
     public ArrayList<String> playersOnline() throws IOException {
-        input = "/playersOnline";
+        send("/playersOnline");
         String inMessage;
         ArrayList<String> players = new ArrayList<>();
         while((inMessage = in.readLine()) != null && !inMessage.equals("/end")) {
@@ -153,14 +184,14 @@ public class Client  implements Runnable {
      * Jesli gracz zostal zaproszony, przyjmuje zaproszenie tym samym dolaczajac siebie i drugiego gracza do gry.
      */
     public void confirm() {
-        input = "/confirm";
+        send("/confirm");
     }
 
     /**
      * Odrzuca zaproszenie, jesli zaproszony. Nie wykonuje akcji w innym wypadku.
      */
     public void reject() {
-        input = "/reject";
+        send("/reject");
     }
 
     /**
@@ -168,7 +199,7 @@ public class Client  implements Runnable {
      * @param message wiadomosc
      */
     public void messageOpponent(String message) {
-        input = "M" + message;
+        send("M" + message);
     }
 
     /**
@@ -177,6 +208,6 @@ public class Client  implements Runnable {
      */
     public void makeMove(String move) {
         board = move;
-        input = "X" + board;
+        send("X" + board);
     }
 }

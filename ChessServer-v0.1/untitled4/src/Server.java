@@ -6,11 +6,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Server implements Runnable {
-    private ArrayList<ConnectionHandler> connections;
+    private final ArrayList<ConnectionHandler> connections;
     private ServerSocket server;
     private boolean done;
     private ExecutorService pool;
-    private ArrayList<Game> games = new ArrayList<>();
+    private final ArrayList<Game> games = new ArrayList<>();
 
     public Server() {
         connections = new ArrayList<>();
@@ -69,7 +69,6 @@ public class Server implements Runnable {
         private BufferedReader in;
         private PrintWriter out;
         private String nickname;
-        private String supposedName;
         private Game game = null;
         private String inviter = null;
 
@@ -83,7 +82,7 @@ public class Server implements Runnable {
                 out = new PrintWriter(client.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(client.getInputStream()));
                 out.println("Please enter your nickname: ");
-                supposedName = in.readLine();
+                String supposedName = in.readLine();
                 while(findUser(supposedName) != null) {
                     out.println("Please choose another nickname: ");
                     supposedName = in.readLine();
@@ -133,61 +132,116 @@ public class Server implements Runnable {
                 shutdown();
             }
         }
-
         public void outsideGame(String message) {
             if(message.startsWith("/playWith")) {
-                String[] messageSplit = message.split(" ", 2);
-                if(findUser(messageSplit[1]) != null) {
-                    ConnectionHandler ch = findUser(messageSplit[1]);
-                    if(Objects.equals(ch.nickname, nickname)) {
-                        out.println("Wanna play with yourself ?!");
-                        return;
-                    }
-                    if(ch.game == null) {
-                        ch.sendMessage("Wanna play with: " + nickname + "?");
-                        ch.inviter = nickname;
-                    }
-                    else { out.println("SERVER: Player already in another game"); }
-                }
-                else { out.println("SERVER: There is no such player."); }
+                playWith(extractName(message));
             }
             else if(message.startsWith("/playersOnline")) {
-                out.println("Active players:");
-                for(ConnectionHandler ch : connections) {
-                    out.println(ch.nickname + (ch.game == null ? "" : " inGame"));
-                }
+                playersOnline();
             }
-            else if(message.startsWith("/Confirm")) {
-                if(inviter != null) {
-                    ConnectionHandler ch = findUser(inviter);
-                    game = new Game(this, ch);
-                    ch.game = game;
-                    System.out.println("SERVER: New game: " + game.players[0].nickname + " " + game.players[1].nickname);
-                    out.println("SERVER: In game with: " + game.players[1].nickname);
-                    ch.sendMessage("SERVER: In game with: " + game.players[0].nickname);
-                    games.add(game); //na koniec if-a
-                }
+            else if(message.startsWith("/confirm")) {
+                confirm();
             }
-            else if(message.startsWith("/Reject")) {
-                if(inviter != null) {
-                    ConnectionHandler ch = findUser(inviter);
-                    ch.sendMessage("Invitation rejected");
-                    inviter = null;
-                }
+            else if(message.startsWith("/reject")) {
+                reject();
             }
         }
         public void inGame(String message) {
             if(message.startsWith("M")) {
-                if (game.players[0] == this) {
-                    game.players[1].sendMessage(nickname + ": " + message.substring(1));
-                } else {
-                    game.players[0].sendMessage(nickname + ": " + message.substring(1));
-                }
+                messageOpponent(message.substring(1));
             }
             else if (message.startsWith("X")) {
-                System.out.println("SERVER: (" + nickname + ") Move: " + message.substring(1));
+                makeMove(message.substring(1));
+            }
+            else if(message.startsWith("E")) {
+                endGame(1);
             }
         }
+
+        /**
+         * Konczy gre. Jesli 1 to gracz 1, 2 to gracz 2, 0 to remis.
+         * @param winner kto wygral
+         */
+        public void endGame(int winner) {
+            Game tmp = new Game(game.players[0], game.players[1]);
+            if(winner == 1) {
+                tmp.players[0].sendMessage("You won");
+                tmp.players[1].sendMessage("You lost");
+            }
+            else if(winner == 2) {
+                tmp.players[0].sendMessage("You lost");
+                tmp.players[1].sendMessage("You won");
+            }
+            else if(winner == 0) {
+                tmp.players[0].sendMessage("Draw");
+                tmp.players[1].sendMessage("Draw");
+            }
+            tmp.players[0].sendMessage("SERVER: endOfGame");
+            tmp.players[0].game = null;
+            tmp.players[1].sendMessage("SERVER: endOfGame");
+            tmp.players[1].game = null;
+            Server.this.games.remove(this);
+        }
+
+        public void messageOpponent(String message) {
+            if (game.players[0] == this) {
+                game.players[1].sendMessage(nickname + ": " + message);
+            } else {
+                game.players[0].sendMessage(nickname + ": " + message);
+            }
+        }
+        public void makeMove(String move) {
+            System.out.println("SERVER: (" + nickname + ") Move: " + move);
+        }
+
+        public String extractName(String message) {
+            String[] messageSplit = message.split(" ", 2);
+            if(messageSplit.length >= 2) {
+                return messageSplit[1];
+            }
+            return null;
+        }
+        public void playWith(String nick) {
+            if(nick != null && findUser(nick) != null) {
+                ConnectionHandler ch = findUser(nick);
+                if(Objects.equals(ch.nickname, nickname)) {
+                    out.println("Wanna play with yourself ?!");
+                    return;
+                }
+                if(ch.game == null) {
+                    ch.sendMessage("Wanna play with: " + nickname + "?");
+                    ch.inviter = nickname;
+                }
+                else { out.println("SERVER: Player already in another game"); }
+            }
+            else { out.println("SERVER: There is no such player."); }
+        }
+        public void playersOnline() {
+            out.println("Active players:");
+            for(ConnectionHandler ch : connections) {
+                out.println(ch.nickname + (ch.game == null ? "" : " inGame"));
+            }
+            out.println("/end");
+        }
+        public void confirm() {
+            if(inviter != null) {
+                ConnectionHandler ch = findUser(inviter);
+                game = new Game(this, ch);
+                ch.game = game;
+                System.out.println("SERVER: New game: " + game.players[0].nickname + " " + game.players[1].nickname);
+                out.println("SERVER: In game with: " + game.players[1].nickname);
+                ch.sendMessage("SERVER: In game with: " + game.players[0].nickname);
+                games.add(game); //na koniec if-a
+            }
+        }
+        public void reject() {
+            if(inviter != null) {
+                ConnectionHandler ch = findUser(inviter);
+                ch.sendMessage("Invitation rejected");
+                inviter = null;
+            }
+        }
+
 
         public void sendMessage(String message) {
             out.println(message);

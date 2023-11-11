@@ -221,11 +221,11 @@ public class Server implements Runnable {
             else { systemMessage("SERVER: There is no such player."); }
         }
         public void playersOnline() {
-            out.println("Active players:");
+            systemMessage("Active players:");
             for(ConnectionHandler ch : connections) {
                 systemMessage(ch.nickname + (ch.game == null ? "" : " inGame"));
             }
-            out.println("/end");
+            systemMessage("/end");
         }
         public void confirm() {
             if(inviter != null) {
@@ -233,7 +233,7 @@ public class Server implements Runnable {
                 game = new Game(this, ch);
                 ch.game = game;
                 System.out.println("SERVER: New game: " + game.players[0].nickname + " " + game.players[1].nickname);
-                out.println("SERVER: In game with: " + game.players[1].nickname);
+                systemMessage("SERVER: In game with: " + game.players[1].nickname);
                 ch.systemMessage("SERVER: In game with: " + game.players[0].nickname);
                 games.add(game); //na koniec if-a
             }

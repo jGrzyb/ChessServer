@@ -46,6 +46,10 @@ public class Client  implements Runnable {
             }
         }
     }
+    public void send(String message) {
+        input = message;
+        notify();
+    }
 
     class TestInput implements Runnable {
         @Override
@@ -96,10 +100,10 @@ public class Client  implements Runnable {
                     receiveSystemMessage(inMessage.substring(1));
                 }
                 else if (inMessage.startsWith("X")) {
-                    receiveOpponentsMessage(inMessage.substring(1));
+                    receiveMove(inMessage.substring(1));
                 }
                 else if (inMessage.startsWith("M")) {
-                    receiveMove(inMessage.substring(1));
+                    receiveOpponentsMessage(inMessage.substring(1));
                 }
                 else {
                     System.out.println("UNHANDLED: " + inMessage);

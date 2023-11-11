@@ -223,7 +223,7 @@ public class Server implements Runnable {
         public void playersOnline() {
             out.println("Active players:");
             for(ConnectionHandler ch : connections) {
-                out.println(ch.nickname + (ch.game == null ? "" : " inGame"));
+                systemMessage(ch.nickname + (ch.game == null ? "" : " inGame"));
             }
             out.println("/end");
         }

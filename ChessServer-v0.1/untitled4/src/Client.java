@@ -101,6 +101,9 @@ public class Client  implements Runnable {
                 else if (inMessage.startsWith("M")) {
                     receiveMove(inMessage.substring(1));
                 }
+                else {
+                    System.out.println("UNHANDLED: " + inMessage);
+                }
             }
         } catch (IOException e) {
             // unlucky

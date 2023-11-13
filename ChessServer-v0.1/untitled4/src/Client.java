@@ -10,11 +10,11 @@ import java.util.ArrayList;
 // ustawienie początkowe szachów
 
 /**
- * Klasa Client obsługuje połączenie z serverem, wysyłanie i otrzymywanie wiadomości <p></p>
- * Zainicjuj obiekt "Client(MESSAGE_RECEIVER)" oraz wykonaj metode {@link #run()}. <p></p>
+ * Klasa Client obsługuje połączenie z serverem, wysyłanie i otrzymywanie wiadomości
+ * Zainicjuj obiekt "Client(MESSAGE_RECEIVER)" oraz wykonaj metode {@link #run()}.
  * "MESSAGE_RECEIVER" to twoj obiekt odbierajacy wiadomosci. Musi implementować {@link MyListener}
- * i zawierac {@link MyListener#performed(String, MessType)} ktory przujmuje wiadomosc i jej typ. <p></p>
- * Zobacz rowniez: {@link MessType}.<p></p>
+ * i zawierac {@link MyListener#performed(String, MessType)} ktory przujmuje wiadomosc i jej typ.
+ * Zobacz rowniez: {@link MessType}.
  * Przykladowe uzycie: {@link Test}
  */
 public class Client implements Runnable {
@@ -24,11 +24,16 @@ public class Client implements Runnable {
     private  boolean done = false;
     private String board = " "; //-----------------------------------------ustawienie poczatkowe szachow
     private final MyListener listener;
+
+    /**
+     * Tworzy objekt typu {@link Client}
+     * @param obj obiekt nasłuchujący wiadomości z serwera.
+     */
     public Client(MyListener obj) {
         listener = obj;
     }
 
-    public void shutdown() {
+    private void shutdown() {
         done = true;
         try {
             in.close();
@@ -89,10 +94,10 @@ public class Client implements Runnable {
         }
     }
 
-    public static void main(String[] args) {
+//    public static void main(String[] args) {
 //        Client client = new Client();
 //        client.run();
-    }
+//    }
 
 
     /**
@@ -158,6 +163,10 @@ public class Client implements Runnable {
             // unlucky
         }
     }
+
+    /**
+     * Kończy połączenie z serwerem.
+     */
     public void quit() {
         send("/quit");
         shutdown();

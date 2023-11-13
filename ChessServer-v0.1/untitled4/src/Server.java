@@ -294,6 +294,10 @@ public class Server implements Runnable {
         }
     }
 
+    /**
+     * uruchamia serwer.
+     * @param args .
+     */
     public static void main(String[] args) {
         Server server = new Server();
         server.run();

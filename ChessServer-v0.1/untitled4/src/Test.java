@@ -6,16 +6,34 @@ import java.awt.event.ActionListener;
  */
 public class Test implements MyListener {
     Client client;
+
+    /**
+     * Konstruktor Test.
+     */
+    public Test() {}
+
+    /**
+     * Pomocnicza funkcja uruchamiająca klienta. 
+     */
     public void run() {
         Client client = new Client(this);
         client.run();
     }
 
+    /**
+     * Main.
+     * @param str .
+     */
     public static void main(String[] str) {
         Test t = new Test();
         t.run();
     }
 
+    /**
+     * Implementuje funkcję {@link MyListener#performed(String, MessType)} z interface-u {@link MyListener}
+     * @param message wiadomość
+     * @param type typ wiadomości
+     */
     @Override
     public void performed(String message, MessType type) {
         switch (type) {

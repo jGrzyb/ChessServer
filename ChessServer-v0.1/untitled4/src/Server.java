@@ -5,6 +5,9 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Klasa serwer obsługuje stawianie serwera, komunikację z użytkownikiem, tworzenie oraz łączenie użytkowników w grach.
+ */
 public class Server implements Runnable {
     private final ArrayList<ConnectionHandler> connections;
     private ServerSocket server;
@@ -12,11 +15,17 @@ public class Server implements Runnable {
     private ExecutorService pool;
     private final ArrayList<Game> games = new ArrayList<>();
 
+    /**
+     * tworzy obiekt klasy Server.
+     */
     public Server() {
         connections = new ArrayList<>();
         done = false;
     }
 
+    /**
+     * Funkcja run() ustawia parametry serwera oraz go uruchamia.
+     */
     @Override
     public void run() {
         try {
@@ -33,14 +42,14 @@ public class Server implements Runnable {
             shutdown();
         }
     }
-    public void broadcast(String message) {
+    private void broadcast(String message) {
         for(ConnectionHandler ch : connections) {
             if(ch != null) {
                 ch.systemMessage(message);
             }
         }
     }
-    public void shutdown() {
+    private void shutdown() {
         try {
             done = true;
             if(!server.isClosed()) {
@@ -54,7 +63,7 @@ public class Server implements Runnable {
         }
     }
 
-    public ConnectionHandler findUser(String nickname) {
+    private ConnectionHandler findUser(String nickname) {
         for(ConnectionHandler ch : connections) {
             if(Objects.equals(ch.nickname, nickname)) {
                 return ch;
@@ -64,8 +73,8 @@ public class Server implements Runnable {
         return null;
     }
 
-    class ConnectionHandler implements Runnable {
-        private Socket client;
+    private class ConnectionHandler implements Runnable {
+        private final Socket client;
         private BufferedReader in;
         private PrintWriter out;
         private String nickname;
@@ -274,7 +283,10 @@ public class Server implements Runnable {
         }
     }
 
-    class Game {
+    /**
+     * Przechowuje informacje o grze.
+     */
+    public class Game {
         ConnectionHandler[] players = new ConnectionHandler[2];
         Game(ConnectionHandler ch1, ConnectionHandler ch2) {
             players[0] = ch1;

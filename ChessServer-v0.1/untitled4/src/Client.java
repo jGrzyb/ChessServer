@@ -4,14 +4,13 @@ import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
 
-//uncomment message receivers, main
-
-interface MyListener {
-    public void performed(String message, MessType type);
-}
+// TODO:
+//uncomment message receivers,
+// uncomment main,
+// ustawienie początkowe szachów
 
 /**
- * Łącznik z serverem. <p></p>
+ * Klasa Client obsługuje połączenie z serverem, wysyłanie i otrzymywanie wiadomości <p></p>
  * Zainicjuj obiekt "Client(MESSAGE_RECEIVER)" oraz wykonaj metode {@link #run()}. <p></p>
  * "MESSAGE_RECEIVER" to twoj obiekt odbierajacy wiadomosci. Musi implementować {@link MyListener}
  * i zawierac {@link MyListener#performed(String, MessType)} ktory przujmuje wiadomosc i jej typ. <p></p>
@@ -22,7 +21,6 @@ public class Client implements Runnable {
     private Socket client;
     private BufferedReader in;
     private PrintWriter out;
-//    public volatile String input;
     private  boolean done = false;
     private String board = " "; //-----------------------------------------ustawienie poczatkowe szachow
     private final MyListener listener;
@@ -64,7 +62,13 @@ public class Client implements Runnable {
 //        }
 //    }
 
+    /**
+     * Klasa TestInput obsługuje wejście z konsoli. Służy do testowania programu z poziomu konsoli. Nie należy używać w końcowym programie.
+     */
     class TestInput implements Runnable {
+        /**
+         * Implementuje metodę run() z {@link Runnable}
+         */
         @Override
         public void run() {
             try {
@@ -85,7 +89,6 @@ public class Client implements Runnable {
         }
     }
 
-
     public static void main(String[] args) {
 //        Client client = new Client();
 //        client.run();
@@ -102,7 +105,7 @@ public class Client implements Runnable {
      * {@link #makeMove(String)}
      * @param message wiadomosc
      */
-    public void send(String message) {
+    private void send(String message) {
         if(message.equals("/quit")) {
             out.println(message);
             shutdown();
@@ -113,7 +116,7 @@ public class Client implements Runnable {
     }
 
     /**
-     * Łączy z serwerem oraz tworzy wątki do obsługi konsoli i funkcji.
+     * Łączy z serwerem oraz tworzy wątki do obsługi konsoli. Przyjmuje dane z serwera. Implementuje metodę run z Runnable.
      */
     public void run() {
         try {
@@ -160,10 +163,10 @@ public class Client implements Runnable {
         shutdown();
     }
 
-    public void confirmed(String message) {
+    private void confirmed(String message) {
         listener.performed(message, MessType.CONFIRM);
     }
-    public void rejected(String message) {
+    private void rejected(String message) {
         listener.performed(message, MessType.REJECT);
     }
 
@@ -171,8 +174,7 @@ public class Client implements Runnable {
      * Przyjmuje wiadomosc systemowa
      * @param message wiadomosc
      */
-
-    public void receiveSystemMessage(String message) {
+    private void receiveSystemMessage(String message) {
 //        System.out.println("System: " + message);
         listener.performed(message, MessType.SYSTEM_MESSAGE);
     }
@@ -181,7 +183,7 @@ public class Client implements Runnable {
      * przyjmuje wiadomosc od przeciwnika. Tylko podczas gry (mam nadzieje)
      * @param message wiadomosc
      */
-    public void receiveOpponentsMessage(String message) {
+    private void receiveOpponentsMessage(String message) {
 //        System.out.println("Message: " + message);
         listener.performed(message, MessType.OPPONENT_MESSAGE);
     }
@@ -190,7 +192,7 @@ public class Client implements Runnable {
      * przyjmuje ruch
      * @param move ruch
      */
-    public void receiveMove(String move) {
+    private void receiveMove(String move) {
         board = move;
 //        System.out.println("Move: " + board);
         listener.performed(board, MessType.MOVE);
@@ -198,7 +200,7 @@ public class Client implements Runnable {
     }
 
     /**
-     * Pyta gracza o nazwie nick czy chce grac.
+     * Wysyła zapytanie przez serwer do gracza o nazwie nick czy chce grać.
      * @param nick nazwa gracza
      */
     public void playWith(String nick) {
@@ -206,9 +208,9 @@ public class Client implements Runnable {
     }
 
     /**
-     * Pyta o wszyskich graczy
-     * @return tablice graczy (jesli w grze, z dopiskiem inGame)
-     * @throws IOException wyjatek
+     * Wysyła zapytanie do serwera o listę aktywnych graczy
+     * @return tablica graczy (jesli w grze, z dopiskiem inGame)
+     * @throws IOException wyjątek
      */
     public ArrayList<String> playersOnline() throws IOException {
         send("/playersOnline");
@@ -221,14 +223,14 @@ public class Client implements Runnable {
     }
 
     /**
-     * Jesli gracz zostal zaproszony, przyjmuje zaproszenie tym samym dolaczajac siebie i drugiego gracza do gry.
+     * Jesli gracz zostal zaproszony, informuje serwer, że przyjmuje zaproszenie tym samym dolaczajac siebie i drugiego gracza do gry. Nie wykonuj akcji w innym wypadku.
      */
     public void confirm() {
         send("/confirm");
     }
 
     /**
-     * Odrzuca zaproszenie, jesli zaproszony. Nie wykonuje akcji w innym wypadku.
+     * Informuje serwer, że odrzuca zaproszenie, jesli zaproszony. Nie wykonuje akcji w innym wypadku.
      */
     public void reject() {
         send("/reject");
@@ -236,15 +238,15 @@ public class Client implements Runnable {
 
     /**
      * Wysyła oponentowi wiadomosc. Dziala tylko podczas gry.
-     * @param message wiadomosc
+     * @param message wiadomość
      */
     public void messageOpponent(String message) {
         send("M" + message);
     }
 
     /**
-     * Wysyla ruch gracza.
-     * @param move ruch
+     * Wysyla ruch gracza do przeciwnika.
+     * @param move String zawierająy planszę.
      */
     public void makeMove(String move) {
         board = move;

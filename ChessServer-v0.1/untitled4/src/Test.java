@@ -1,6 +1,9 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Przykładowy
+ */
 public class Test implements MyListener {
     Client client;
     public void run() {

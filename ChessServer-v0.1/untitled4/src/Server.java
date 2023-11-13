@@ -22,7 +22,7 @@ public class Server implements Runnable {
         try {
             server = new ServerSocket(9999);
             pool = Executors.newCachedThreadPool();
-            System.out.println("SERVER: Server is running");
+            System.out.println("Server is running");
             while(!done) {
                 Socket client = server.accept();
                 ConnectionHandler handler = new ConnectionHandler(client);
@@ -60,7 +60,7 @@ public class Server implements Runnable {
                 return ch;
             }
         }
-        System.out.println("SERVER: Nie znaleziono uzytkownika: " + nickname);
+        System.out.println("Nie znaleziono uzytkownika: " + nickname);
         return null;
     }
 
@@ -88,15 +88,15 @@ public class Server implements Runnable {
                     supposedName = in.readLine();
                 }
                 nickname = supposedName;
-                System.out.println("SERVER: " + nickname + " connected!    Online: " + connections.size());
-                broadcast("SERVER: " + nickname + " joined!");
+                System.out.println(nickname + " connected!    Online: " + connections.size());
+                broadcast(nickname + " joined!");
                 String message;
                 while((message = in.readLine()) != null) {
                     if(message.startsWith("/quit")) {
                         String leftName = nickname;
-                        broadcast("SERVER: " + nickname + " left");
+                        broadcast(nickname + " left");
                         shutdown();
-                        System.out.println("SERVER: " + leftName + " left.    Online: " + connections.size());
+                        System.out.println(leftName + " left.    Online: " + connections.size());
                         break;
                     }
                     else if(game == null) {
@@ -176,9 +176,9 @@ public class Server implements Runnable {
                 tmp.players[0].systemMessage("Draw");
                 tmp.players[1].systemMessage("Draw");
             }
-            tmp.players[0].systemMessage("SERVER: endOfGame");
+            tmp.players[0].systemMessage("endOfGame");
             tmp.players[0].game = null;
-            tmp.players[1].systemMessage("SERVER: endOfGame");
+            tmp.players[1].systemMessage("endOfGame");
             tmp.players[1].game = null;
             Server.this.games.remove(this);
         }
@@ -194,7 +194,7 @@ public class Server implements Runnable {
             sendToOpponent("M" + nickname + ": " + message.substring(1));
         }
         public void makeMove(String move) {
-            System.out.println("SERVER: (" + nickname + ") Move: " + move);
+            System.out.println("(" + nickname + ") Move: " + move);
             sendToOpponent(move);
         }
 
@@ -216,9 +216,9 @@ public class Server implements Runnable {
                     ch.systemMessage("Wanna play with: " + nickname + "?");
                     ch.inviter = nickname;
                 }
-                else { systemMessage("SERVER: Player already in another game"); }
+                else { systemMessage("Player already in another game"); }
             }
-            else { systemMessage("SERVER: There is no such player."); }
+            else { systemMessage("There is no such player."); }
         }
         public void playersOnline() {
             systemMessage("Active players:");
@@ -232,9 +232,9 @@ public class Server implements Runnable {
                 ConnectionHandler ch = findUser(inviter);
                 game = new Game(this, ch);
                 ch.game = game;
-                System.out.println("SERVER: New game: " + game.players[0].nickname + " " + game.players[1].nickname);
-                systemMessage("SERVER: In game with: " + game.players[1].nickname);
-                ch.systemMessage("SERVER: In game with: " + game.players[0].nickname);
+                System.out.println("New game: " + game.players[0].nickname + " " + game.players[1].nickname);
+                systemMessage("In game with: " + game.players[1].nickname);
+                ch.systemMessage("In game with: " + game.players[0].nickname);
                 games.add(game); //na koniec if-a
             }
         }

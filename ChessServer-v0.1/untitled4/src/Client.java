@@ -1,17 +1,34 @@
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
 
+//uncomment message receivers, main
+
+interface MyListener {
+    public void performed(String message, MessType type);
+}
+
 /**
- * Łącznik z serverem. Stworz obiekt Client i wykonaj dla niego metode {@link #run() run}.
+ * Łącznik z serverem. <p></p>
+ * Zainicjuj obiekt "Client(MESSAGE_RECEIVER)" oraz wykonaj metode {@link #run()}. <p></p>
+ * "MESSAGE_RECEIVER" to twoj obiekt odbierajacy wiadomosci. Musi implementować {@link MyListener}
+ * i zawierac {@link MyListener#performed(String, MessType)} ktory przujmuje wiadomosc i jej typ. <p></p>
+ * Zobacz rowniez: {@link MessType}.<p></p>
+ * Przykladowe uzycie: {@link Test}
  */
-public class Client  implements Runnable {
+public class Client implements Runnable {
     private Socket client;
     private BufferedReader in;
     private PrintWriter out;
 //    public volatile String input;
     private  boolean done = false;
     private String board = " "; //-----------------------------------------ustawienie poczatkowe szachow
+    private final MyListener listener;
+    public Client(MyListener obj) {
+        listener = obj;
+    }
 
     public void shutdown() {
         done = true;
@@ -68,10 +85,12 @@ public class Client  implements Runnable {
         }
     }
 
+
     public static void main(String[] args) {
-        Client client = new Client();
-        client.run();
+//        Client client = new Client();
+//        client.run();
     }
+
 
     /**
      * Wysyla wiadomosc na serwer. Nie uzywac jesli mozesz skorzystac z: <p>
@@ -124,6 +143,7 @@ public class Client  implements Runnable {
                 else {
                     System.out.println("UNHANDLED: " + inMessage);
                 }
+
             }
         } catch (IOException e) {
             // unlucky
@@ -136,7 +156,8 @@ public class Client  implements Runnable {
      */
 
     public void receiveSystemMessage(String message) {
-        System.out.println("System: " + message);
+//        System.out.println("System: " + message);
+        listener.performed(message, MessType.SYSTEM_MESSAGE);
     }
 
     /**
@@ -144,7 +165,8 @@ public class Client  implements Runnable {
      * @param message wiadomosc
      */
     public void receiveOpponentsMessage(String message) {
-        System.out.println("Message: " + message);
+//        System.out.println("Message: " + message);
+        listener.performed(message, MessType.OPPONENT_MESSAGE);
     }
 
     /**
@@ -153,7 +175,8 @@ public class Client  implements Runnable {
      */
     public void receiveMove(String move) {
         board = move;
-        System.out.println("Move: " + board);
+//        System.out.println("Move: " + board);
+        listener.performed(board, MessType.MOVE);
 
     }
 

@@ -155,6 +155,10 @@ public class Client implements Runnable {
             // unlucky
         }
     }
+    public void quit() {
+        send("/quit");
+        shutdown();
+    }
 
     public void confirmed(String message) {
         listener.performed(message, MessType.CONFIRM);

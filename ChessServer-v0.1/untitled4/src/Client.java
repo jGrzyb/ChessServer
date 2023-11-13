@@ -140,6 +140,12 @@ public class Client implements Runnable {
                 else if (inMessage.startsWith("M")) {
                     receiveOpponentsMessage(inMessage.substring(1));
                 }
+                else if(inMessage.startsWith("C")) {
+                    confirmed(inMessage.substring(1));
+                }
+                else if(inMessage.startsWith("R")) {
+                    rejected(inMessage.substring(1));
+                }
                 else {
                     System.out.println("UNHANDLED: " + inMessage);
                 }
@@ -148,6 +154,13 @@ public class Client implements Runnable {
         } catch (IOException e) {
             // unlucky
         }
+    }
+
+    public void confirmed(String message) {
+        listener.performed(message, MessType.CONFIRM);
+    }
+    public void rejected(String message) {
+        listener.performed(message, MessType.REJECT);
     }
 
     /**

@@ -235,6 +235,7 @@ public class Server implements Runnable {
                 System.out.println("New game: " + game.players[0].nickname + " " + game.players[1].nickname);
                 systemMessage("In game with: " + game.players[1].nickname);
                 ch.systemMessage("In game with: " + game.players[0].nickname);
+                ch.confirmMessage("unimportant");
                 games.add(game); //na koniec if-a
             }
         }
@@ -242,6 +243,7 @@ public class Server implements Runnable {
             if(inviter != null) {
                 ConnectionHandler ch = findUser(inviter);
                 ch.systemMessage("Invitation rejected");
+                ch.rejectMessage("unimportant");
                 inviter = null;
             }
         }
@@ -253,6 +255,10 @@ public class Server implements Runnable {
         public void systemMessage(String message) {
             sendMessage("S" + message);
         }
+        public void confirmMessage(String message) {
+            sendMessage("C" + message);
+        }
+        public void rejectMessage(String message) {sendMessage("R" + message);}
 
         public void shutdown() {
             try {

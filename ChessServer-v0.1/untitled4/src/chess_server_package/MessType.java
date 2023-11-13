@@ -1,5 +1,7 @@
+package chess_server_package;
+
 /**
- * Enum MessType zawiera wszystkie rodzaje wiadomości jakie może otrzymać użytkownik z serwera.
+ * Enum chess_server_package.MessType zawiera wszystkie rodzaje wiadomości jakie może otrzymać użytkownik z serwera.
  */
 public enum MessType {
     /**

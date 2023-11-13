@@ -1,5 +1,5 @@
-import javax.swing.*;
-import java.awt.event.ActionEvent;
+package chess_server_package;
+
 import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -10,8 +10,8 @@ import java.util.ArrayList;
 // ustawienie początkowe szachów
 
 /**
- * Klasa Client obsługuje połączenie z serverem, wysyłanie i otrzymywanie wiadomości
- * Zainicjuj obiekt "Client(MESSAGE_RECEIVER)" oraz wykonaj metode {@link #run()}.
+ * Klasa chess_server_package.Client obsługuje połączenie z serverem, wysyłanie i otrzymywanie wiadomości
+ * Zainicjuj obiekt "chess_server_package.Client(MESSAGE_RECEIVER)" oraz wykonaj metode {@link #run()}.
  * "MESSAGE_RECEIVER" to twoj obiekt odbierajacy wiadomosci. Musi implementować {@link MyListener}
  * i zawierac {@link MyListener#performed(String, MessType)} ktory przujmuje wiadomosc i jej typ.
  * Zobacz rowniez: {@link MessType}.
@@ -95,7 +95,7 @@ public class Client implements Runnable {
     }
 
 //    public static void main(String[] args) {
-//        Client client = new Client();
+//        chess_server_package.Client client = new chess_server_package.Client();
 //        client.run();
 //    }
 

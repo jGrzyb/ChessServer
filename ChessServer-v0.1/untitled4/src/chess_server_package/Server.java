@@ -1,3 +1,5 @@
+package chess_server_package;
+
 import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ public class Server implements Runnable {
     private final ArrayList<Game> games = new ArrayList<>();
 
     /**
-     * tworzy obiekt klasy Server.
+     * tworzy obiekt klasy chess_server_package.Server.
      */
     public Server() {
         connections = new ArrayList<>();
@@ -31,7 +33,7 @@ public class Server implements Runnable {
         try {
             server = new ServerSocket(9999);
             pool = Executors.newCachedThreadPool();
-            System.out.println("Server is running");
+            System.out.println("chess_server_package.Server is running");
             while(!done) {
                 Socket client = server.accept();
                 ConnectionHandler handler = new ConnectionHandler(client);

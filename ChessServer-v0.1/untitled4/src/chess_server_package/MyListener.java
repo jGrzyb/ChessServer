@@ -1,5 +1,7 @@
+package chess_server_package;
+
 /**
- * Klasy implementujące interfejs MyListener pozwalają na utworzenie obiektu klasy {@link Client}.
+ * Klasy implementujące interfejs chess_server_package.MyListener pozwalają na utworzenie obiektu klasy {@link Client}.
  */
 public interface MyListener {
     /**

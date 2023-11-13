@@ -1,14 +1,13 @@
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+package chess_server_package;
 
 /**
- * Przykładowy
+ * Przykładowa klasa implementująca {@link MyListener}
  */
 public class Test implements MyListener {
     Client client;
 
     /**
-     * Konstruktor Test.
+     * Konstruktor chess_server_package.Test.
      */
     public Test() {}
 

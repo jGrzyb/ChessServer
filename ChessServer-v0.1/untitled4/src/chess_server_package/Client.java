@@ -277,7 +277,7 @@ public class Client implements Runnable {
      * @return lista gier gracza
      */
     public ArrayList<ArrayList<String>> getPlayerGames() {
-        return null;
+        return null; // TODO
     }
 
     /**
@@ -286,7 +286,7 @@ public class Client implements Runnable {
      * @return lista list statystyk wszystkich graczy.
      */
     public ArrayList<ArrayList<String>> getPlayersStatistics() {
-        return null;
+        return null; // TODO
     }
 
     /**
@@ -295,7 +295,7 @@ public class Client implements Runnable {
      * @return lista statystyk gracza.
      */
     public ArrayList<String> getMyStatistics() {
-        return null;
+        return null; //TODO
     }
 
 

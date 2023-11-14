@@ -112,20 +112,68 @@ public class Server implements Runnable {
             this.client = client;
         }
 
+        /**
+         * Obsługuje początek połączenia, logowanie lub rejestrację.
+         * @throws IOException wyjątek.
+         */
+        public void beginConnection() throws IOException {
+            systemMessage("Please enter your nickname: ");
+            String supposedName = in.readLine();
+            while(findUser(supposedName) != null) {
+                systemMessage("Please choose another nickname: ");
+                supposedName = in.readLine();
+            }
+            nickname = supposedName;
+            System.out.println(nickname + " connected!    Online: " + connections.size());
+            broadcast(nickname + " joined!");
+            // TODO
+        }
+
+        /**
+         * Obsługuje rejestrację użytkownika.
+         */
+        public void register() {
+            return; //TODO
+        }
+
+        /**
+         * Obsługuje logowanie użytkownika.
+         */
+        public void login() {
+            return; //TODO
+        }
+
+        /**
+         * Pyta bazę danych czy użytkownik o takiej nazwie i haśle istnieje
+         * @param password hash hasła użytkownika
+         * @return prawda jeśli hasło poprawne, false jeśli nie
+         */
+        public boolean correctPassword(String password) {
+            return false; //TODO
+        }
+
+        /**
+         * Obsługuje zmianę hasła.
+         * @param newPassword nowe hasło
+         */
+        public void changePassword(String newPassword) {
+            return; //TODO
+        }
+
+        /**
+         * Obsługuje zmianę nazwy.
+         * @param newName nowa nazwa
+         */
+        public void changeName(String newName) {
+            return; //TODO
+        }
+
         @Override
         public void run() {
             try {
                 out = new PrintWriter(client.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                systemMessage("Please enter your nickname: ");
-                String supposedName = in.readLine();
-                while(findUser(supposedName) != null) {
-                    systemMessage("Please choose another nickname: ");
-                    supposedName = in.readLine();
-                }
-                nickname = supposedName;
-                System.out.println(nickname + " connected!    Online: " + connections.size());
-                broadcast(nickname + " joined!");
+                beginConnection();
                 String message;
                 while((message = in.readLine()) != null) {
                     if(message.startsWith("/quit")) {
@@ -390,20 +438,20 @@ public class Server implements Runnable {
          * @param name nazwa użytkownika którego informacje nas interesują
          */
         public void getPlayerGamesMessage(String name) {
-            return;
+            return; //TODO
         }
         /**
          * Pobiera z bazy danych informacje o statystykach wszystkich graczy i zapisuje je w wygodnej postaci.
          */
         public void getAllPlayersStatistics() {
-            return;
+            return; //TODO
         }
         /**
          * Pobiera z bazy danych informacje o statystykach gracza o nazwie name i zapisuje je w wygodnej postaci.
          * @param name nazwa użytkownika
          */
         public void getPlayerStatistics(String name) {
-            return;
+            return; //TODO
         }
 
         /**
@@ -411,14 +459,14 @@ public class Server implements Runnable {
          * @param name imię gracza
          */
         public void sendPlayerGamesMessage(String name) {
-            return;
+            return; //TODO
         }
 
         /**
          * Wysyła do użytkownika informacje o statystykach wszystkich graczy.
          */
         public void sendAllPlayersStatistics() {
-            return;
+            return; //TODO
         }
 
         /**
@@ -426,7 +474,7 @@ public class Server implements Runnable {
          * @param name nazwa gracza.
          */
         public void sendPlayerStatistics(String name) {
-            return;
+            return; //TODO
         }
 
         /**

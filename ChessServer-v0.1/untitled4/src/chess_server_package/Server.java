@@ -173,6 +173,9 @@ public class Server implements Runnable {
             //TODO changeName
         }
 
+        /**
+         * uruchamia ConnectionHanler-a.
+         */
         @Override
         public void run() {
             try {

@@ -303,6 +303,8 @@ public class Client implements Runnable {
 
     /**
      * Obsługuje logowanie się użytkownika.
+     * @param name nazwa
+     * @param password hasło
      */
     public void login(String name, String password) {
         return;
@@ -311,22 +313,28 @@ public class Client implements Runnable {
 
     /**
      * Obsługuje rejestrację użytkownika.
+     * @param name nazwa
+     * @param password hasło
      */
-    public void register() {
+    public void register(String name, String password) {
         //TODO register
     }
 
     /**
      * Obsługuje zmianę hasła użytkownika
+     * @param name nazwa
+     * @param oldPassword stare hasło
+     * @param newPassword nowe hasło
      */
-    public void changePassword() {
+    public void changePassword(String name, String oldPassword, String newPassword) {
         //TODO changePassword
     }
 
     /**
      * Obsługuje zmianę nazwy użytkownika
+     * @param newName nowa nazwa
      */
-    public void changeName() {
+    public void changeName(String newName) {
         //TODO changeName
     }
 

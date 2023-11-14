@@ -111,11 +111,11 @@ public class Client implements Runnable {
 
     /**
      * Wysyla wiadomosc na serwer. Nie uzywac jesli mozesz skorzystac z: <p>
-     * {@link #playWith(String)}, <p>
-     * {@link #playersOnline()}, <p>
-     * {@link #confirm()}, <p>
-     * {@link #reject()}, <p>
-     * {@link #messageOpponent(String)}, <p>
+     * {@link #playWith(String)},
+     * {@link #playersOnline()},
+     * {@link #confirm()},
+     * {@link #reject()},
+     * {@link #messageOpponent(String)},
      * {@link #makeMove(String)}
      * @param message wiadomosc
      */
@@ -320,23 +320,23 @@ public class Client implements Runnable {
         //TODO register
     }
 
-    /**
-     * Obsługuje zmianę hasła użytkownika
-     * @param name nazwa
-     * @param oldPassword stare hasło
-     * @param newPassword nowe hasło
-     */
-    public void changePassword(String name, String oldPassword, String newPassword) {
-        //TODO changePassword
-    }
-
-    /**
-     * Obsługuje zmianę nazwy użytkownika
-     * @param newName nowa nazwa
-     */
-    public void changeName(String newName) {
-        //TODO changeName
-    }
+//    /**
+//     * Obsługuje zmianę hasła użytkownika
+//     * @param name nazwa
+//     * @param oldPassword stare hasło
+//     * @param newPassword nowe hasło
+//     */
+//    public void changePassword(String name, String oldPassword, String newPassword) {
+//        //TODO changePassword
+//    }
+//
+//    /**
+//     * Obsługuje zmianę nazwy użytkownika
+//     * @param newName nowa nazwa
+//     */
+//    public void changeName(String newName) {
+//        //TODO changeName
+//    }
 
 
 //    public void getGame() {

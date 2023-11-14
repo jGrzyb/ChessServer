@@ -78,7 +78,7 @@ public class Server implements Runnable {
     /**
      * Klasa ConnectionHandler obsługuje połączenie serwera z konkretnym użytkownikiem.
      */
-    public class ConnectionHandler implements Runnable, Serializable {
+    public class ConnectionHandler implements Runnable {
         /**
          * Obsługuje połączenie serwera z użytkonikiem
          */
@@ -155,23 +155,23 @@ public class Server implements Runnable {
             //TODO correctPassword
         }
 
-        /**
-         * Obsługuje zmianę hasła.
-         * @param newPassword nowe hasło
-         */
-        public void changePassword(String newPassword) {
-            return;
-            //TODO changePassword
-        }
-
-        /**
-         * Obsługuje zmianę nazwy.
-         * @param newName nowa nazwa
-         */
-        public void changeName(String newName) {
-            return;
-            //TODO changeName
-        }
+//        /**
+//         * Obsługuje zmianę hasła.
+//         * @param newPassword nowe hasło
+//         */
+//        public void changePassword(String newPassword) {
+//            return;
+//            //TODO changePassword
+//        }
+//
+//        /**
+//         * Obsługuje zmianę nazwy.
+//         * @param newName nowa nazwa
+//         */
+//        public void changeName(String newName) {
+//            return;
+//            //TODO changeName
+//        }
 
         /**
          * uruchamia ConnectionHanler-a.
@@ -440,31 +440,6 @@ public class Server implements Runnable {
          * @param message wiadomość
          */
         public void rejectMessage(String message) {sendMessage("R" + message);}
-
-        /**
-         * Pobiera z bazy danych informacje o partiach gracza i zapisuje je w wygodnej postaci.
-         * @param name nazwa użytkownika którego informacje nas interesują
-         */
-        public void getPlayerGamesMessage(String name) {
-            return;
-            //TODO getPlayerGamesMessage
-        }
-        /**
-         * Pobiera z bazy danych informacje o statystykach wszystkich graczy i zapisuje je w wygodnej postaci.
-         */
-        public void getAllPlayersStatistics() {
-            return;
-            //TODO getAllPlayersStatistics
-        }
-        /**
-         * Pobiera z bazy danych informacje o statystykach gracza o nazwie name i zapisuje je w wygodnej postaci.
-         * @param name nazwa użytkownika
-         */
-        public void getPlayerStatistics(String name) {
-            return;
-            //TODO getPlayerStatistics
-        }
-
         /**
          * Wysyła do użytkownika informacje o partiach gracza.
          * @param name imię gracza

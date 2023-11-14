@@ -16,7 +16,11 @@ public class Test implements MyListener {
      */
     public void run() {
         Client client = new Client(this);
-        client.run();
+        Thread t1 = new Thread(client);
+        t1.start();
+        while(!client.outExist()) {
+            System.out.print("");
+        }
     }
 
     /**

@@ -75,14 +75,39 @@ public class Server implements Runnable {
         return null;
     }
 
-    private class ConnectionHandler implements Runnable {
+    /**
+     * Klasa ConnectionHandler obsługuje połączenie serwera z konkretnym użytkownikiem.
+     */
+    public class ConnectionHandler implements Runnable, Serializable {
+        /**
+         * Obsługuje połączenie serwera z użytkonikiem
+         */
         private final Socket client;
+        /**
+         * obsługuje wiadomości przychodzące od użytkownika
+         */
         private BufferedReader in;
+        /**
+         * obsługuje wysyłanie wiadomości do użytkownika.
+         */
         private PrintWriter out;
-        private String nickname;
+        /**
+         * nazwa użytkownika
+         */
+        public String nickname = "BRAK";
+        /**
+         * przechowuje informacje o grze użytkownika
+         */
         private Game game = null;
+        /**
+         * jeśli gracz zostanie zaproszony do gry, gracz zapraszający zostanie tu zapisany
+         */
         private String inviter = null;
 
+        /**
+         * Tworzy obiekt klasy ConnectionHandler
+         * @param client przyjmuje socket użytkownika.
+         */
         public ConnectionHandler(Socket client) {
             this.client = client;
         }
@@ -143,7 +168,13 @@ public class Server implements Runnable {
                 shutdown();
             }
         }
+
+        /**
+         * obsługuje polecenia poza grą.
+         * @param message polecenie.
+         */
         public void outsideGame(String message) {
+            System.out.println(message);
             if(message.startsWith("/playWith")) {
                 playWith(extractName(message));
             }
@@ -156,7 +187,15 @@ public class Server implements Runnable {
             else if(message.startsWith("/reject")) {
                 reject();
             }
+//            else if(message.startsWith("/getGame")) {
+//                getGame();
+//            }
         }
+
+        /**
+         * Obsługuje polecenia w grze.
+         * @param message polecenie
+         */
         public void inGame(String message) {
             if(message.startsWith("M")) {
                 messageOpponent(message);
@@ -194,6 +233,10 @@ public class Server implements Runnable {
             Server.this.games.remove(this);
         }
 
+        /**
+         * Wysyła do przeciwnika. Nie zaleca się używać.
+         * @param message wiadomość
+         */
         public void sendToOpponent(String message) {
             if (game.players[0] == this) {
                 game.players[1].sendMessage(message);
@@ -201,14 +244,29 @@ public class Server implements Runnable {
                 game.players[0].sendMessage(message);
             }
         }
+
+        /**
+         * Wysyła wiadomość do przeciwnika.
+         * @param message wiadomość
+         */
         public void messageOpponent(String message) {
             sendToOpponent("M" + nickname + ": " + message.substring(1));
         }
+
+        /**
+         * obsługuje przesyłanie ruchów pomiędzy graczami.
+         * @param move ruch.
+         */
         public void makeMove(String move) {
             System.out.println("(" + nickname + ") Move: " + move);
             sendToOpponent(move);
         }
 
+        /**
+         * Pomocnicza funkcja do poleceń tekstowych.
+         * @param message polecenie
+         * @return nazwa gracza
+         */
         public String extractName(String message) {
             String[] messageSplit = message.split(" ", 2);
             if(messageSplit.length >= 2) {
@@ -216,6 +274,11 @@ public class Server implements Runnable {
             }
             return null;
         }
+
+        /**
+         * Obsługuje połączenie się z innym użytkownikiem w grze.
+         * @param nick nazwa gracza z którym gramy.
+         */
         public void playWith(String nick) {
             if(nick != null && findUser(nick) != null) {
                 ConnectionHandler ch = findUser(nick);
@@ -231,6 +294,10 @@ public class Server implements Runnable {
             }
             else { systemMessage("There is no such player."); }
         }
+
+        /**
+         * Wysyła do użytkownika informację o grazcach Online.
+         */
         public void playersOnline() {
             systemMessage("Active players:");
             for(ConnectionHandler ch : connections) {
@@ -238,6 +305,10 @@ public class Server implements Runnable {
             }
             systemMessage("/end");
         }
+
+        /**
+         * Obsługuje potwierdzenie zaproszenia.
+         */
         public void confirm() {
             if(inviter != null) {
                 ConnectionHandler ch = findUser(inviter);
@@ -250,6 +321,10 @@ public class Server implements Runnable {
                 games.add(game); //na koniec if-a
             }
         }
+
+        /**
+         * obsługuje odrzucenie zaproszenia.
+         */
         public void reject() {
             if(inviter != null) {
                 ConnectionHandler ch = findUser(inviter);
@@ -258,18 +333,105 @@ public class Server implements Runnable {
                 inviter = null;
             }
         }
+//        public void getGame() {
+//            System.out.println("Tak");
+//            ArrayList<ArrayList<String>> tmp = new ArrayList<>();
+//            tmp.add(new ArrayList<String>());
+//            tmp.add(new ArrayList<String>());
+//            tmp.add(new ArrayList<String>());
+//            tmp.get(0).add("uno");
+//            tmp.get(0).add("duo");
+//            tmp.get(1).add("ter");
+//            tmp.get(1).add("kwar");
+//            tmp.get(2).add(("kwin"));
+//            tmp.get(2).add("sek");
+//            StringBuilder str = new StringBuilder();
+//            for (ArrayList<String> x: tmp) {
+//                for (String y: x) {
+//                    str.append(y).append(",");
+//                }
+//                str.append("]");
+//            }
+//            System.out.println(str);
+//            systemMessage("|" + str);
+//        }
 
-
+        /**
+         * wysyła wiadomość do użytkownika
+         * @param message wiadomość
+         */
         public void sendMessage(String message) {
             out.println(message);
         }
+
+        /**
+         * wysyła wiadomość systemową do użytkownika
+         * @param message wiadomość
+         */
         public void systemMessage(String message) {
             sendMessage("S" + message);
         }
+
+        /**
+         * Wysyła wiadomość potwierdzającą zaproszenie do użytkownika
+         * @param message wiadomość
+         */
         public void confirmMessage(String message) {
             sendMessage("C" + message);
         }
+        /**
+         * Wysyła wiadomość odrzucającą zaproszenie do użytkownika
+         * @param message wiadomość
+         */
         public void rejectMessage(String message) {sendMessage("R" + message);}
+
+        /**
+         * Pobiera z bazy danych informacje o partiach gracza i zapisuje je w wygodnej postaci.
+         * @param name nazwa użytkownika którego informacje nas interesują
+         */
+        public void getPlayerGamesMessage(String name) {
+            return;
+        }
+        /**
+         * Pobiera z bazy danych informacje o statystykach wszystkich graczy i zapisuje je w wygodnej postaci.
+         */
+        public void getAllPlayersStatistics() {
+            return;
+        }
+        /**
+         * Pobiera z bazy danych informacje o statystykach gracza o nazwie name i zapisuje je w wygodnej postaci.
+         * @param name nazwa użytkownika
+         */
+        public void getPlayerStatistics(String name) {
+            return;
+        }
+
+        /**
+         * Wysyła do użytkownika informacje o partiach gracza.
+         * @param name imię gracza
+         */
+        public void sendPlayerGamesMessage(String name) {
+            return;
+        }
+
+        /**
+         * Wysyła do użytkownika informacje o statystykach wszystkich graczy.
+         */
+        public void sendAllPlayersStatistics() {
+            return;
+        }
+
+        /**
+         * Wysyła do użytkownika informacje o statystykach gracza.
+         * @param name nazwa gracza.
+         */
+        public void sendPlayerStatistics(String name) {
+            return;
+        }
+
+        /**
+         * zamyka połączenie z serwerem.
+         */
 
         public void shutdown() {
             try {
@@ -288,7 +450,7 @@ public class Server implements Runnable {
     /**
      * Przechowuje informacje o grze.
      */
-    public class Game {
+    private class Game implements Serializable{
         ConnectionHandler[] players = new ConnectionHandler[2];
         Game(ConnectionHandler ch1, ConnectionHandler ch2) {
             players[0] = ch1;

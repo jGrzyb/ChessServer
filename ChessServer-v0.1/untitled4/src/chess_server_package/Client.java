@@ -3,6 +3,7 @@ package chess_server_package;
 import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 // TODO:
 //uncomment message receivers,
@@ -24,6 +25,14 @@ public class Client implements Runnable {
     private  boolean done = false;
     private String board = " "; //-----------------------------------------ustawienie poczatkowe szachow
     private final MyListener listener;
+
+    /**
+     * Informuje czy podłączono się do serwera
+     * @return zwraca true jeśli podłączono i false w przeciwnym wypadku
+     */
+    public boolean outExist() {
+        return out != null;
+    }
 
     /**
      * Tworzy objekt typu {@link Client}
@@ -110,7 +119,7 @@ public class Client implements Runnable {
      * {@link #makeMove(String)}
      * @param message wiadomosc
      */
-    private void send(String message) {
+    public void send(String message) {
         if(message.equals("/quit")) {
             out.println(message);
             shutdown();
@@ -261,4 +270,53 @@ public class Client implements Runnable {
         board = move;
         send("X" + board);
     }
+
+    /**
+     * Wysyła zapytanie do serwera o listę gier gracza. Zwraca listę gier gracza w kolejności chronologicznej w postaci listy list.
+     * Kolumny: data, przeciwnik, zwycięzca
+     * @return lista gier gracza
+     */
+    public ArrayList<ArrayList<String>> getPlayerGames() {
+        return null;
+    }
+
+    /**
+     * Wysyła zapytanie do serwera o statystyki wszystkich graczy. Zwraca statystyki wszystkich graczy w postaci listy list.
+     * Kolumny: liczba gier, liczba wygranych, liczba przegranych, liczba remisów, data utworzenia konta.
+     * @return lista list statystyk wszystkich graczy.
+     */
+    public ArrayList<ArrayList<String>> getPlayersStatistics() {
+        return null;
+    }
+
+    /**
+     * Wysyła zapytanie do serwera o statystyki gracza. Zwraca statyst gracza w postaci listy.
+     * Kolumny: liczba gier, liczba wygranych, liczba przegranych, liczba remisów, data utworzenia konta.
+     * @return lista statystyk gracza.
+     */
+    public ArrayList<String> getMyStatistics() {
+        return null;
+    }
+
+
+//    public void getGame() {
+//        send("/getGame");
+//            String inMessage = "";
+//            try {
+//                while((inMessage = in.readLine()) != null && !inMessage.startsWith("S|")) {
+//                    System.out.println("?? " + inMessage);
+//                }
+//                System.out.println(inMessage);
+//                String s = inMessage.substring(2);
+//                ArrayList<String> s1 = new ArrayList<>(Arrays.asList(s.split("]")));
+//                System.out.println(s1);
+//                ArrayList<ArrayList<String>> s2 = new ArrayList<>();
+//                for(String x: s1) {
+//                    s2.add(new ArrayList<String>(Arrays.asList(x.split(","))));
+//                }
+//                System.out.println(s2);
+//            } catch (Exception e) {
+//
+//            }
+//    }
 }

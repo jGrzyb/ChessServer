@@ -126,21 +126,23 @@ public class Server implements Runnable {
             nickname = supposedName;
             System.out.println(nickname + " connected!    Online: " + connections.size());
             broadcast(nickname + " joined!");
-            // TODO
+            // TODO beginConnection
         }
 
         /**
          * Obsługuje rejestrację użytkownika.
          */
         public void register() {
-            return; //TODO
+            return;
+            //TODO register
         }
 
         /**
          * Obsługuje logowanie użytkownika.
          */
         public void login() {
-            return; //TODO
+            return;
+            //TODO login
         }
 
         /**
@@ -149,7 +151,8 @@ public class Server implements Runnable {
          * @return prawda jeśli hasło poprawne, false jeśli nie
          */
         public boolean correctPassword(String password) {
-            return false; //TODO
+            return false;
+            //TODO correctPassword
         }
 
         /**
@@ -157,7 +160,8 @@ public class Server implements Runnable {
          * @param newPassword nowe hasło
          */
         public void changePassword(String newPassword) {
-            return; //TODO
+            return;
+            //TODO changePassword
         }
 
         /**
@@ -165,7 +169,8 @@ public class Server implements Runnable {
          * @param newName nowa nazwa
          */
         public void changeName(String newName) {
-            return; //TODO
+            return;
+            //TODO changeName
         }
 
         @Override
@@ -438,20 +443,23 @@ public class Server implements Runnable {
          * @param name nazwa użytkownika którego informacje nas interesują
          */
         public void getPlayerGamesMessage(String name) {
-            return; //TODO
+            return;
+            //TODO getPlayerGamesMessage
         }
         /**
          * Pobiera z bazy danych informacje o statystykach wszystkich graczy i zapisuje je w wygodnej postaci.
          */
         public void getAllPlayersStatistics() {
-            return; //TODO
+            return;
+            //TODO getAllPlayersStatistics
         }
         /**
          * Pobiera z bazy danych informacje o statystykach gracza o nazwie name i zapisuje je w wygodnej postaci.
          * @param name nazwa użytkownika
          */
         public void getPlayerStatistics(String name) {
-            return; //TODO
+            return;
+            //TODO getPlayerStatistics
         }
 
         /**
@@ -459,14 +467,16 @@ public class Server implements Runnable {
          * @param name imię gracza
          */
         public void sendPlayerGamesMessage(String name) {
-            return; //TODO
+            return;
+            //TODO sendPlayerGamesMessage
         }
 
         /**
          * Wysyła do użytkownika informacje o statystykach wszystkich graczy.
          */
         public void sendAllPlayersStatistics() {
-            return; //TODO
+            return;
+            //TODO sendAllPlayersStatistics
         }
 
         /**
@@ -474,7 +484,8 @@ public class Server implements Runnable {
          * @param name nazwa gracza.
          */
         public void sendPlayerStatistics(String name) {
-            return; //TODO
+            return;
+            //TODO sendPlayerStatistics
         }
 
         /**

@@ -5,7 +5,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-// TODO:
+// TODO: other
 //uncomment message receivers,
 // uncomment main,
 // ustawienie początkowe szachów
@@ -277,7 +277,8 @@ public class Client implements Runnable {
      * @return lista gier gracza
      */
     public ArrayList<ArrayList<String>> getPlayerGames() {
-        return null; // TODO
+        return null;
+        // TODO getPlayerGames
     }
 
     /**
@@ -286,7 +287,8 @@ public class Client implements Runnable {
      * @return lista list statystyk wszystkich graczy.
      */
     public ArrayList<ArrayList<String>> getPlayersStatistics() {
-        return null; // TODO
+        return null;
+        // TODO getPlayersStatistics
     }
 
     /**
@@ -295,7 +297,37 @@ public class Client implements Runnable {
      * @return lista statystyk gracza.
      */
     public ArrayList<String> getMyStatistics() {
-        return null; //TODO
+        return null;
+        //TODO getMyStatistics
+    }
+
+    /**
+     * Obsługuje logowanie się użytkownika.
+     */
+    public void login(String name, String password) {
+        return;
+        // TODO login
+    }
+
+    /**
+     * Obsługuje rejestrację użytkownika.
+     */
+    public void register() {
+        //TODO register
+    }
+
+    /**
+     * Obsługuje zmianę hasła użytkownika
+     */
+    public void changePassword() {
+        //TODO changePassword
+    }
+
+    /**
+     * Obsługuje zmianę nazwy użytkownika
+     */
+    public void changeName() {
+        //TODO changeName
     }
 
 

@@ -3,7 +3,6 @@ package chess_server_package;
 import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 // TODO: other
 //uncomment message receivers,
@@ -306,17 +305,34 @@ public class Client implements Runnable {
      * @param name nazwa
      * @param password hasło
      */
-    public void login(String name, String password) {
-        return;
+    public boolean login(String name, String password) throws IOException {
+        String tmp = "/login " + name + " " + password;
+        send(tmp);
+        String inMessage;
+        while((inMessage = in.readLine()) != null && !inMessage.startsWith("Right") && !inMessage.equals("Wrong")) {
+            System.out.println("loging in: " + inMessage);
+        }
+        assert inMessage != null;
+        return inMessage.equals("Right");
         // TODO login
     }
 
     /**
      * Obsługuje rejestrację użytkownika.
-     * @param name nazwa
+     *
+     * @param name     nazwa
      * @param password hasło
+     * @return czy się powiodło
      */
-    public void register(String name, String password) {
+    public boolean register(String name, String password) throws IOException {
+        String tmp = "/register " + name + " " + password;
+        send(tmp);
+        String inMessage;
+        while((inMessage = in.readLine()) != null && !inMessage.startsWith("Right") && !inMessage.equals("Wrong")) {
+            System.out.println("registering in: " + inMessage);
+        }
+        assert inMessage != null;
+        return inMessage.equals("Right");
         //TODO register
     }
 

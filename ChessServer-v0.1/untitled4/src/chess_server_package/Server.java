@@ -3,6 +3,7 @@ package chess_server_package;
 import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -117,31 +118,56 @@ public class Server implements Runnable {
          * @throws IOException wyjątek.
          */
         public void beginConnection() throws IOException {
-            systemMessage("Please enter your nickname: ");
-            String supposedName = in.readLine();
-            while(findUser(supposedName) != null) {
-                systemMessage("Please choose another nickname: ");
-                supposedName = in.readLine();
+            systemMessage("Log in or register?");
+            String inMessage;
+            while((inMessage = in.readLine()) != null) {
+                System.out.println(inMessage);
+                if(inMessage.startsWith("/login")) {
+                    String[] tmp = inMessage.split(" ");
+                    String name = tmp[1];
+                    String password = tmp[2];
+                    boolean right = login(name, password);
+                    if(right) {
+                        sendMessage("Right");
+                        break;
+                    }
+                }
+                else if(inMessage.startsWith("/register")) {
+                    String[] tmp = inMessage.split(" ");
+                    String name = tmp[1];
+                    String password = tmp[2];
+                    boolean right = register(name, password);
+                    if (right) {
+                        sendMessage("Right");
+                        break;
+                    }
+                }
             }
-            nickname = supposedName;
-            System.out.println(nickname + " connected!    Online: " + connections.size());
-            broadcast(nickname + " joined!");
+//            systemMessage("Please enter your nickname: ");
+//            String supposedName = in.readLine();
+//            while(findUser(supposedName) != null) {
+//                systemMessage("Please choose another nickname: ");
+//                supposedName = in.readLine();
+//            }
+//            nickname = supposedName;
+//            System.out.println(nickname + " connected!    Online: " + connections.size());
+//            broadcast(nickname + " joined!");
             // TODO beginConnection
         }
 
         /**
          * Obsługuje rejestrację użytkownika.
          */
-        public void register() {
-            return;
+        public boolean register(String name, String password) {
+            return true;
             //TODO register
         }
 
         /**
          * Obsługuje logowanie użytkownika.
          */
-        public void login() {
-            return;
+        public boolean login(String name, String password) {
+            return true;
             //TODO login
         }
 

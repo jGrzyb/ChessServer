@@ -24,6 +24,7 @@ public class Client implements Runnable {
     private  boolean done = false;
     private String board = " "; //-----------------------------------------ustawienie poczatkowe szachow
     private final MyListener listener;
+    private boolean loggedin;
 
     /**
      * Informuje czy podłączono się do serwera
@@ -146,6 +147,10 @@ public class Client implements Runnable {
 //            t.start();
 
             String inMessage;
+            while(!loggedin) {
+                System.out.print("");
+            }
+
             while((inMessage = in.readLine()) != null) {
                 if(inMessage.startsWith("S")) {
                     receiveSystemMessage(inMessage.substring(1));
@@ -309,7 +314,7 @@ public class Client implements Runnable {
         String tmp = "/login " + name + " " + password;
         send(tmp);
         String inMessage;
-        while((inMessage = in.readLine()) != null && !inMessage.startsWith("Right") && !inMessage.equals("Wrong")) {
+        while((inMessage = in.readLine()) != null && !inMessage.equals("Wrong") && !inMessage.equals("Right")) {
             System.out.println("loging in: " + inMessage);
         }
         assert inMessage != null;

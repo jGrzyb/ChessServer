@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.sql.*;
 
 /**
  * Klasa serwer obsługuje stawianie serwera, komunikację z użytkownikiem, tworzenie oraz łączenie użytkowników w grach.
@@ -17,6 +18,7 @@ public class Server implements Runnable {
     private boolean done;
     private ExecutorService pool;
     private final ArrayList<Game> games = new ArrayList<>();
+    private Connection database;
 
     /**
      * tworzy obiekt klasy chess_server_package.Server.
@@ -32,6 +34,7 @@ public class Server implements Runnable {
     @Override
     public void run() {
         try {
+            database = DriverManager.getConnection("jdbc:mysql://localhost:3306/ChessServer", "root", "");
             server = new ServerSocket(9999);
             pool = Executors.newCachedThreadPool();
             System.out.println("chess_server_package.Server is running");
@@ -43,6 +46,8 @@ public class Server implements Runnable {
             }
         } catch (IOException e) {
             shutdown();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
     private void broadcast(String message) {
@@ -118,7 +123,6 @@ public class Server implements Runnable {
          * @throws IOException wyjątek.
          */
         public void beginConnection() throws IOException {
-            systemMessage("Log in or register?");
             String inMessage;
             while((inMessage = in.readLine()) != null) {
                 System.out.println(inMessage);
@@ -131,6 +135,9 @@ public class Server implements Runnable {
                         sendMessage("Right");
                         break;
                     }
+                    else {
+                        sendMessage("Wrong");
+                    }
                 }
                 else if(inMessage.startsWith("/register")) {
                     String[] tmp = inMessage.split(" ");
@@ -140,6 +147,9 @@ public class Server implements Runnable {
                     if (right) {
                         sendMessage("Right");
                         break;
+                    }
+                    else {
+                        sendMessage("Wrong");
                     }
                 }
             }
@@ -158,16 +168,41 @@ public class Server implements Runnable {
         /**
          * Obsługuje rejestrację użytkownika.
          */
-        public boolean register(String name, String password) {
-            return true;
+        public boolean register(String n, String p) {
+            try {
+                Statement st = database.createStatement();
+                ResultSet res = st.executeQuery("SELECT * FROM playerdata WHERE name='"+n+"'");
+                if(res.next()) {
+                    System.out.println("there is already such player");
+                    return false;
+                }
+                else {
+                    res = st.executeQuery("SELECT MAX(playerid) m FROM playerdata");
+                    res.next();
+                    int pid = res.getInt("m") + 1;
+                    PreparedStatement pr = database.prepareStatement("INSERT INTO playerdata (`playerid`, `name`, `password`) VALUES ('"+pid+"', '"+n+"', '"+p+"')");
+                    pr.execute();
+                    return true;
+                }
+            } catch(Exception e) {
+                System.out.println("failed statement");
+                return false;
+            }
             //TODO register
         }
 
         /**
          * Obsługuje logowanie użytkownika.
          */
-        public boolean login(String name, String password) {
-            return true;
+        public boolean login(String n, String p) {
+            try {
+                Statement st = database.createStatement();
+                ResultSet res = st.executeQuery("SELECT * FROM playerdata WHERE name='"+n+"' AND password='"+p+"'");
+                return res.next();
+            } catch(Exception e) {
+                System.out.println("failed statement");
+                return false;
+            }
             //TODO login
         }
 
